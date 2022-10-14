@@ -7,7 +7,7 @@ const rowHeight = 40 //行高
 const colNums = 10  //列
 const rowNums = 5 //行
 
-const getLenPx=(str:string, font_size:number) =>{
+const getLenPx = (str: string, font_size: number) => {
     let str_leng = str.replace(/[^\x00-\xff]/gi, 'aa').length;
     return str_leng * font_size / 2
 }
@@ -24,7 +24,7 @@ onMounted(() => {
         ctx.lineTo(colNums * colWidth, rowStart * rowHeight);
         ctx.stroke(); // Draw it
 
-    
+
     }
 
     for (let colStart = 1; colStart < colNums; colStart++) {
@@ -32,22 +32,32 @@ onMounted(() => {
         ctx.lineTo(colStart * colWidth, rowNums * rowHeight);
         ctx.stroke(); // Draw it
     }
-    
+
 
 })
 
-function drawText(ctx:CanvasRenderingContext2D,rowStart:number){
+function drawText(ctx: CanvasRenderingContext2D, rowStart: number) {
     ctx.beginPath();
-        ctx.fillStyle = "black";
-        ctx.font="20px normal";
-        let text = "大使馆几乎都是";
-        console.log(getLenPx("大使馆几乎都是",20));
-        if(text.length > 8){
-            text = text.slice(0,8) + '...'
-        }
-        ctx.fillText(text,0, rowStart + 35);
+    ctx.fillStyle = "black";
+    ctx.font = "20px normal";
+    let text = "大使馆几乎都是";
+    console.log(getLenPx("大使馆几乎都是", 20));
+    if (text.length > 8) {
+        text = text.slice(0, 8) + '...'
+    }
+    ctx.fillText(text, 0, rowStart + 35);
 }
 
+
+function drawRow(ctx: CanvasRenderingContext2D, data: any[]) {
+    for (let i = 0, iLen = data.length; i < iLen; i++) {
+        for (let j = 0, jLen = data[i].length; j < jLen; j++) {
+            ctx.moveTo(colStart * colWidth, 0);
+            ctx.lineTo(colStart * colWidth, rowNums * rowHeight);
+            ctx.stroke(); // Draw it
+        }
+    }
+}
 
 </script>
 
