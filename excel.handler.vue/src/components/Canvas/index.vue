@@ -1,11 +1,12 @@
 <script setup lang='ts'>
 import { ref, onMounted } from 'vue';
+import type { rowOpt } from './index';
 
 const excelCanvas = ref(null)
 const colWidth = 200 //列宽
 const rowHeight = 40 //行高
-const colNums = 10  //列
-const rowNums = 5 //行
+const colNum = 10  //列
+const rowNum = 5 //行
 
 const getLenPx = (str: string, font_size: number) => {
     let str_leng = str.replace(/[^\x00-\xff]/gi, 'aa').length;
@@ -19,17 +20,17 @@ onMounted(() => {
     ctx.beginPath();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "#9d9d9d"; // Green path
-    for (let rowStart = 1; rowStart < rowNums; rowStart++) {
-        ctx.moveTo(0, rowStart * rowHeight);
-        ctx.lineTo(colNums * colWidth, rowStart * rowHeight);
-        ctx.stroke(); // Draw it
 
+    drawRow({ctx,rowNum,rowHeight,colWidth})
+    // for (let rowStart = 1; rowStart < rowNum; rowStart++) {
+    //     ctx.moveTo(0, rowStart * rowHeight);
+    //     ctx.lineTo(colNum * colWidth, rowStart * rowHeight);
+    //     ctx.stroke(); // Draw it
+    // }
 
-    }
-
-    for (let colStart = 1; colStart < colNums; colStart++) {
+    for (let colStart = 1; colStart < colNum; colStart++) {
         ctx.moveTo(colStart * colWidth, 0);
-        ctx.lineTo(colStart * colWidth, rowNums * rowHeight);
+        ctx.lineTo(colStart * colWidth, rowNum * rowHeight);
         ctx.stroke(); // Draw it
     }
 
@@ -49,13 +50,21 @@ function drawText(ctx: CanvasRenderingContext2D, rowStart: number) {
 }
 
 
-function drawRow(ctx: CanvasRenderingContext2D, data: any[]) {
-    for (let i = 0, iLen = data.length; i < iLen; i++) {
-        for (let j = 0, jLen = data[i].length; j < jLen; j++) {
-            ctx.moveTo(colStart * colWidth, 0);
-            ctx.lineTo(colStart * colWidth, rowNums * rowHeight);
-            ctx.stroke(); // Draw it
-        }
+/**
+ * 行的作画
+ * @param {Object} params 
+ */
+function drawRow(params: rowOpt) {
+    const {
+        ctx,
+        rowNum,
+        rowHeight,
+        colWidth
+    } = params;
+    for (let rowStart = 1; rowStart < rowNum; rowStart++) {
+        ctx.moveTo(0, rowStart * rowHeight)
+        ctx.lineTo(colNum * colWidth, rowStart * rowHeight);
+        ctx.stroke();
     }
 }
 
@@ -63,7 +72,7 @@ function drawRow(ctx: CanvasRenderingContext2D, data: any[]) {
 
 <template>
     <div class="canvas-contain">
-        <canvas ref="excelCanvas" :width="colNums * colWidth" :height="rowNums * rowHeight"
+        <canvas ref="excelCanvas" :width="colNum * colWidth" :height="rowNum * rowHeight"
             style="border:2px solid #9d9d9d;"></canvas>
     </div>
 </template>
