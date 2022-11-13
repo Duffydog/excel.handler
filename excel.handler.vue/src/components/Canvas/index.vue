@@ -135,7 +135,7 @@ function drawText(params: textOpt) {
             text
         } = params;
         if (textPx < colWidth) return text;
-        const wordPx = colWidth - ellipsisWordPx;
+        const wordPx = colWidth - ellipsisWordPx - xOffset;
         const wordNum = Math.trunc(wordPx / singleWordPx);
         const result = text.slice(0, wordNum + 1) + props.ellipsisWord
         return result;
