@@ -7,7 +7,8 @@ const props = defineProps({
     texts:{
         type: Array as PropType<[][]>,
         default() {
-            return [['2','3'],['3','4'],['4','9']]
+            // return []
+            return [['2大撒dsa大撒大撒大撒大撒大撒大撒大撒','3'],['3','4'],['4','9']]
         }
     },
     colWidth:{
@@ -28,22 +29,38 @@ const props = defineProps({
     },
     fontSize:{
         type:Number,
-        default:12
+        default:18
     },
     fontColor:{
         type:String,
         default:'#9d9d9d'
-    }    
+    },
+    noneText:{
+        type:String,
+        default:'暂无任何数据'
+    },
+    noneWidth:{
+        type:Number,
+        default:600
+    },
+    noneHeight:{
+        type:Number,
+        default:100
+    }  
 });
 
 const excelCanvas = ref(null)
+let hasTexts = true;
+
 const colNum = (function(){
     if(props.texts[0] ?. length >= 0 && Object.prototype.toString.call(props.texts[0]) === "[object Array]"){
         return props.texts[0].length
     }else{
-        throw new Error('传入texts类型不为[][]！')
+        hasTexts = false;
+        return 0;
     }
 })()  //列
+
 const rowNum = (function (){
     return props.texts.length
 })() //行
@@ -67,10 +84,20 @@ const ellipsisWordPx = getLenPx(props.ellipsisWord, props.fontSize)
 onMounted(() => {
     const canvas: HTMLCanvasElement = excelCanvas.value!
     const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "#FF0000";
     ctx.beginPath();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "#9d9d9d"; // Green path
+    ctx.strokeStyle = "#9d9d9d";
+   
+    if(hasTexts){
+        drawCanvas(ctx);
+    }else{
+        drawNone(ctx);
+    }
+
+ 
+})
+
+function drawCanvas(ctx:CanvasRenderingContext2D){
 
     drawRow({ ctx, rowNum, rowHeight:props.rowHeight, colWidth:props.colWidth })
     drawCol({ ctx, colNum, rowHeight:props.rowHeight, colWidth:props.colWidth })
@@ -91,7 +118,14 @@ onMounted(() => {
             })
         }
     }
-})
+}
+
+function drawNone(ctx:CanvasRenderingContext2D){
+    const noneTextPx = getLenPx(props.noneText,props.fontSize);
+    const x = props.noneWidth/2 - noneTextPx/2;
+    const y = props.noneHeight/2;
+    ctx.fillText(props.noneText, x, y);
+}
 
 function drawText(params: textOpt) {
     const {
@@ -119,7 +153,6 @@ function drawText(params: textOpt) {
         text
     })
 
-    console.log(textWords, x, y)
     ctx.fillText(textWords, x, y);
 
     /**
@@ -155,8 +188,9 @@ function drawRow(params: rowOpt) {
         colWidth
     } = params;
     for (let rowStart = 1; rowStart < rowNum; rowStart++) {
-        ctx.moveTo(0, rowStart * rowHeight)
-        ctx.lineTo(colNum * colWidth, rowStart * rowHeight);
+        let ponit = rowStart * rowHeight + 0.5
+        ctx.moveTo(0, ponit)
+        ctx.lineTo(colNum * colWidth + 0.5, ponit);
         ctx.stroke();
     }
 }
@@ -169,8 +203,9 @@ function drawCol(params: colOpt) {
         colWidth
     } = params;
     for (let colStart = 1; colStart < colNum; colStart++) {
-        ctx.moveTo(colStart * colWidth, 0);
-        ctx.lineTo(colStart * colWidth, rowNum * rowHeight);
+        let ponit = colStart * colWidth + 0.5
+        ctx.moveTo(ponit, 0);
+        ctx.lineTo(ponit, rowNum * rowHeight + 0.5);
         ctx.stroke(); // Draw it
     }
 }
@@ -179,8 +214,10 @@ function drawCol(params: colOpt) {
 
 <template>
     <div class="canvas-contain">
-        <canvas ref="excelCanvas" :width="colNum * colWidth" :height="rowNum * rowHeight"
-            style="border:2px solid #9d9d9d;"></canvas>
+        <canvas v-if="hasTexts" ref="excelCanvas" :width="colNum * colWidth" :height="rowNum * rowHeight"
+            style="border:1px solid #9d9d9d;"></canvas>
+        <canvas v-else ref="excelCanvas" :width="noneWidth" :height="noneHeight"
+        style="border:1px solid #9d9d9d;"></canvas>
     </div>
 </template>
 
