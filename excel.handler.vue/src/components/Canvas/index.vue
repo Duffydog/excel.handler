@@ -7,7 +7,7 @@ const props = defineProps({
     texts:{
         type: Array as PropType<[][]>,
         default() {
-            // return []
+            return []
             return [['2大撒dsa大撒大撒大撒大撒大撒大撒大撒','3'],['3','4'],['4','9']]
         }
     },
@@ -87,20 +87,17 @@ onMounted(() => {
     ctx.beginPath();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "#9d9d9d";
-   
-    if(hasTexts){
-        drawCanvas(ctx);
-    }else{
-        drawNone(ctx);
-    }
+    ctx.save();
 
+    ctx.beginPath();
+    ctx.fillStyle = props.fontColor || "black";
+    ctx.font = `${props.fontSize}px` || "12px normal";
+
+    hasTexts ? drawCanvas(ctx):drawNone(ctx);
  
 })
 
 function drawCanvas(ctx:CanvasRenderingContext2D){
-
-    drawRow({ ctx, rowNum, rowHeight:props.rowHeight, colWidth:props.colWidth })
-    drawCol({ ctx, colNum, rowHeight:props.rowHeight, colWidth:props.colWidth })
 
     for(let rowStart = 1; rowStart <= rowNum; rowStart++){
         let y = (rowStart - 1) * props.rowHeight + yOffset;
@@ -111,13 +108,17 @@ function drawCanvas(ctx:CanvasRenderingContext2D){
                 colWidth:props.colWidth,
                 singleWordPx,
                 fontSize:props.fontSize,
-                fontColor:props.fontColor,
                 text:props.texts[rowStart-1][colStart-1],
                 x,
                 y
             })
         }
     }
+
+    ctx.restore();
+
+    drawRow({ ctx, rowNum, rowHeight:props.rowHeight, colWidth:props.colWidth })
+    drawCol({ ctx, colNum, rowHeight:props.rowHeight, colWidth:props.colWidth })
 }
 
 function drawNone(ctx:CanvasRenderingContext2D){
@@ -133,15 +134,10 @@ function drawText(params: textOpt) {
         colWidth,
         singleWordPx,
         fontSize,
-        fontColor,
         text,
         x,
         y
     } = params;
-
-    ctx.beginPath();
-    ctx.fillStyle = fontColor || "black";
-    ctx.font = `${fontSize}px` || "12px normal";
 
     const textPx = getLenPx(text, fontSize);
 

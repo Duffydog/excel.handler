@@ -17,7 +17,6 @@ interface textOpt {
     colWidth:number
     singleWordPx:number,
     fontSize?:number,
-    fontColor?:string
     text:string,
     x:number,
     y:number
