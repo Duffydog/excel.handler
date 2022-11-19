@@ -1,19 +1,25 @@
 <script setup lang='ts'>
+import { getCurrentInstance } from 'vue';
 import axios from 'axios';
 import Upload from "../components/Upload/index.vue";
 import Select from "../components/Select/index.vue";
 import Canvas from "../components/Canvas/index.vue";
 
-async function getUser() {
-  try {
-    const response = await axios.get('/api');
-    console.log(response);
-  } catch (error) {
-    console.error(error);
-  }
+let { proxy } = getCurrentInstance() as any;
+// async function getUser() {
+//   try {
+//     const response = await axios.get('/api');
+//     console.log(response);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+// getUser();
+async function kk() {
+  const result = await proxy.$api.test()
+  console.log(result)
 }
-getUser();
-console.log(axios)
+kk();
 </script>
 
 <template>
