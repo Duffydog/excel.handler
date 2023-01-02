@@ -15,3 +15,4 @@ app.use("/api", index_1.default);
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
+//# sourceMappingURL=index.js.map

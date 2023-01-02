@@ -14,3 +14,4 @@ router.get("/about", function (req, res) {
     res.send("About birds");
 });
 exports.default = router;
+//# sourceMappingURL=index.js.map

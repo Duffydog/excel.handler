@@ -1,9 +1,11 @@
 import axios, {type AxiosResponse} from "axios";
 import QS from 'qs';
 
+const baseURL = '/api',
+    timeout = 1000
 let instance = axios.create({
-    baseURL:'/api',
-    timeout:1000,
+    baseURL,
+    timeout,
     headers:{
         post:{
             'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
@@ -12,11 +14,25 @@ let instance = axios.create({
 
 })
 
+
+let fileInstance = axios.create({
+    baseURL,
+    timeout,
+    headers:{
+        post:{
+            'Content-Type':'multipart/form-data;'
+        }
+    }
+
+})
+
+
+
 instance.interceptors.response.use(
     (response:AxiosResponse) => {
         if(response.status === 200){
             return Promise.resolve(response);
-        } else {            
+        } else {       
             return Promise.reject(response);        
         }   
     },
@@ -41,7 +57,7 @@ export function get(url:string,params:object = {}){
     })
 }
 
-export function post(url:string,params:object){
+export function post(url:string,params:object = {}){
     return new Promise((resolve, reject) => {
         instance.post(url,QS.stringify(params))
         .then(res => {
@@ -49,6 +65,20 @@ export function post(url:string,params:object){
         })
         .catch(err => {
             reject(err.data)
+        })
+    })
+}
+
+export function filePost(url:string,params:object = {}){
+    return new Promise((resolve, reject) => {
+        fileInstance.post(url,params)
+        .then(res => {
+            console.log(res)
+            resolve(res.data)
+        })
+        .catch(err => {
+            console.log(err)
+            reject(err)
         })
     })
 }
