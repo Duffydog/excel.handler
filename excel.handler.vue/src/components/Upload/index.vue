@@ -1,8 +1,7 @@
 <template>
     <div class="upload-contain">
-        <el-upload v-model:file-list="fileList" ref="uploadRef" action drag :http-request="uploadExcel" multiple
-            :auto-upload="false">
-            <el-icon class="el-icon--upload">
+        <el-upload v-model:file-list="fileList" ref="uploadRef" action drag multiple :auto-upload="false">
+            <el-icon class=" el-icon--upload">
                 <upload-filled />
             </el-icon>
             <div class="el-upload__text">
@@ -26,7 +25,7 @@
 
 import { UploadFilled } from '@element-plus/icons-vue'
 import { getCurrentInstance, ref } from 'vue';
-import type { UploadInstance, UploadUserFile } from 'element-plus'
+import type { UploadInstance, UploadUserFile, UploadRawFile } from 'element-plus'
 
 let { proxy } = getCurrentInstance() as any;
 const fileList = ref<UploadUserFile[]>([])
@@ -34,17 +33,37 @@ const uploadRef = ref<UploadInstance>()
 const paramsData = new FormData();
 
 async function uploadExcel() {
-    await proxy.$api.uploadExcel(paramsData)
+    const result = await proxy.$api.uploadExcel(paramsData)
+    if (result.status === 200) {
+        for (let file of fileList.value) {
+            file.status = 'success';
+        }
+        successHandler()
+    } else {
+        for (let file of fileList.value) {
+            file.status = 'fail';
+        }
+        errorHandler()
+    }
+}
+
+function appendExcel() {
     for (let file of fileList.value) {
-        file.status = 'success';
+        paramsData.append('excels', file.raw as UploadRawFile)
     }
 }
 
 function submitExcel() {
-    for (let file of fileList.value) {
-        paramsData.append('excels', file.raw as any)
-    }
+    appendExcel();
     uploadExcel();
+}
+
+function errorHandler() {
+    console.log('errrrrrrrr')
+}
+
+function successHandler() {
+    console.log('sssssssssssssssssssssss')
 }
 
 </script>

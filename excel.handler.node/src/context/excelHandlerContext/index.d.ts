@@ -6,4 +6,8 @@ interface excel {
 type dataArr = colArr[];
 type colArr = string[];
 
-export { excel, dataArr, colArr };
+interface excles {
+  [key: string]: excel[];
+}
+
+export { excel, dataArr, colArr, excles };

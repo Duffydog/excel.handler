@@ -1,6 +1,5 @@
 <script setup lang='ts'>
 // import { getCurrentInstance } from 'vue';
-import axios from 'axios';
 import Upload from "../components/Upload/index.vue";
 import Select from "../components/Select/index.vue";
 import Canvas from "../components/Canvas/index.vue";

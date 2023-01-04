@@ -10,6 +10,8 @@ declare module '@vue/runtime-core' {
     Canvas: typeof import('./src/components/Canvas/index.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']
+    ElCascader: typeof import('element-plus/es')['ElCascader']
+    ElCascaderPanel: typeof import('element-plus/es')['ElCascaderPanel']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
