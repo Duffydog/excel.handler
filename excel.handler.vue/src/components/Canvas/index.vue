@@ -21,7 +21,7 @@ const props = defineProps({
     },
     singleWord: {
         type: String,
-        default: 'aa'
+        default: '达'
     },
     ellipsisWord: {
         type: String,
@@ -68,18 +68,8 @@ const rowNum = (function () {
 const xOffset = 5;
 const yOffset = 35;
 
-/**
- *获取字符串的px长度
- * @param str 
- * @param font_size 
- */
-const getLenPx = (str: string, font_size: number = 12) => {
-    let str_leng = str.replace(/[^\x00-\xff]/gi, 'aa').length;
-    return str_leng * font_size / 2
-}
-
-const singleWordPx = getLenPx(props.singleWord, props.fontSize)
-const ellipsisWordPx = getLenPx(props.ellipsisWord, props.fontSize)
+let singleWordPx = 0
+let ellipsisWordPx = 0
 
 onMounted(() => {
     const canvas: HTMLCanvasElement = excelCanvas.value!
@@ -91,11 +81,24 @@ onMounted(() => {
 
     ctx.beginPath();
     ctx.fillStyle = props.fontColor || "black";
-    ctx.font = `${props.fontSize}px` || "12px normal";
+    ctx.font = `${props.fontSize}px Microsoft YaHei` || "12px Microsoft YaHei";
+
+    singleWordPx = countStrWidth(ctx, props.singleWord)
+    ellipsisWordPx = countStrWidth(ctx, props.ellipsisWord)
 
     hasTexts ? drawCanvas(ctx) : drawNone(ctx);
 
 })
+
+/**
+ * 计算字符串的宽度
+ * @param ctx 
+ * @param text
+ */
+const countStrWidth = (ctx: CanvasRenderingContext2D, text: string) => {
+    const dimension = ctx!.measureText(text)
+    return dimension.width
+}
 
 function drawCanvas(ctx: CanvasRenderingContext2D) {
 
@@ -122,7 +125,7 @@ function drawCanvas(ctx: CanvasRenderingContext2D) {
 }
 
 function drawNone(ctx: CanvasRenderingContext2D) {
-    const noneTextPx = getLenPx(props.noneText, props.fontSize);
+    const noneTextPx = countStrWidth(ctx, props.noneText);
     const x = props.noneWidth / 2 - noneTextPx / 2;
     const y = props.noneHeight / 2;
     ctx.fillText(props.noneText, x, y);
@@ -139,7 +142,7 @@ function drawText(params: textOpt) {
         y
     } = params;
 
-    const textPx = getLenPx(text, fontSize);
+    const textPx = countStrWidth(ctx, text);
 
     const textWords = getWords({
         singleWordPx,
